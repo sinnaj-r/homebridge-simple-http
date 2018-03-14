@@ -1,0 +1,9 @@
+# .prettierrc
+# Use this file to define your defaults for prettier
+# For a list of all available options:
+# https://prettier.io/docs/en/options.html
+printWidth: 80
+singleQuote: false
+semi: false
+jsxBracketSameLine: true
+tabWidth: 4
