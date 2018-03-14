@@ -1,22 +1,26 @@
 import request = require("request-promise-native");
 
 
-class SimpleHTTPSwitch {
-    status_url: string;
-    set_on_url: string;
-    set_off_url: string;
-    on_if_this: string;
-    off_if_this: string;
-    log: any;
-    http_method: any;
-    sendimmediately: any;
-    default_state_off: any;
-    name: any;
+export class SimpleHTTPSwitch {
+    private status_url: string;
+    private set_on_url: string;
+    private set_off_url: string;
+    private on_if_this: string;
+    private off_if_this: string;
+    private log: any;
+    private http_method: any;
+    private default_state_off: any;
+    private name: any;
     constructor(log:any, config:any){
         this.log = log;
         /*
             example_config = {
-                "url":"http://"
+                "status_url":"http://192.168.1.14:8081/status/power_stat",
+                "set_on_url":"http://192.168.1.14:8081/send/KEY_POWER",
+                "set_off_url":"http://192.168.1.14:8081/send/KEY_POWER2",
+                "on_if_this": "ON",
+                "off_if_this": "OFF",
+                "name": "Anlage"
             }
         */
 
@@ -26,13 +30,11 @@ class SimpleHTTPSwitch {
         this.set_off_url = config["set_off_url"];
 
         // HTTP Stuff
-        this.http_method = config["http_method"];
+        this.http_method = config["http_method"] || "GET";
         
         // State Stuff
         this.on_if_this = config["on_if_this"];
         this.off_if_this = config["off_if_this"];
-
-        this.sendimmediately = config["sendimmediately"];
 
         // General
         this.name = config["name"];
@@ -43,7 +45,7 @@ class SimpleHTTPSwitch {
             json:true
         })
     }
-    getPowerState(callback:(error:Error | null, state? :boolean)=>null) {
+    getPowerState(callback:(error:Error | null, state? :boolean)=>void) {
         this.makeRequest(this.status_url)
         .then((res)=>{
             let ret = JSON.parse(res.body)
@@ -56,11 +58,11 @@ class SimpleHTTPSwitch {
             else {
                 callback(Error("Status not known"))
             }
-            this.log(`[${this.name}] HTTP power function succeeded! (${res.body})`);
+            this.log(`[${this.name}] HTTP power state get function succeeded! (${res.body})`);
             
         })
         .catch((err)=>{
-            this.log(`[${this.name}] HTTP power function failed! (${err})`);
+            this.log(`[${this.name}] HTTP power power state get function failed! (${err})`);
             callback(err);
         })
     }
@@ -101,7 +103,7 @@ class SimpleHTTPSwitch {
 }
 
 var Service:any, Characteristic:any;
-export function exporter (homebridge:any) {
+export default function(homebridge:any) {
     let hap = homebridge.hap
     Service = hap.Service;
     Characteristic = hap.Characteristic;
