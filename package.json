@@ -1,19 +1,12 @@
 {
   "name": "homebridge_simple_http",
   "version": "0.0.1",
-  "description": "Sample Platform plugin for homebridge: https://github.com/nfarina/homebridge",
-  "license": "ISC",
+  "description": "Simple HTTP Switch for HomeBridge",
+  "license": "MIT",
   "main": "./build/index.js",
   "keywords": [
     "homebridge-plugin"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/example/homebridge.git"
-  },
-  "bugs": {
-    "url": "http://github.com/example/homebridge/issues"
-  },
   "engines": {
     "node": ">=0.12.0",
     "homebridge": ">=0.2.0"
@@ -28,19 +21,20 @@
     "typescript": "^2.7.2"
   },
   "lint-staged": {
-    "*.js": [
+    "*.ts": [
       "prettier --write",
       "git add"
     ]
   },
   "scripts": {
     "precommit": "lint-staged",
-    "build":"tsc"
+    "build": "tsc"
   },
   "dependencies": {
     "@types/request": "^2.47.0",
     "@types/request-promise-native": "^1.0.14",
     "request": "^2.85.0",
-    "request-promise-native": "^1.0.5"
+    "request-promise-native": "^1.0.5",
+    "ts-node": "^5.0.1"
   }
 }

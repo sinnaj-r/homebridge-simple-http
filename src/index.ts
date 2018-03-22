@@ -1,6 +1,7 @@
 import request = require("request-promise-native")
 
 export class SimpleHTTPSwitch {
+    private on_if_this_fn: (obj: any) => boolean | null
     private status_url: string
     private set_on_url: string
     private set_off_url: string
@@ -35,6 +36,8 @@ export class SimpleHTTPSwitch {
         this.on_if_this = config["on_if_this"]
         this.off_if_this = config["off_if_this"]
 
+        this.on_if_this_fn =
+            config["on_if_this_fn"] && eval(config["on_if_this_fn"])
         // General
         this.name = config["name"]
     }
@@ -47,18 +50,29 @@ export class SimpleHTTPSwitch {
     getPowerState(callback: (error: Error | null, state?: boolean) => void) {
         this.makeRequest(this.status_url)
             .then(res => {
-                let ret = JSON.parse(res.body)
-                if (ret == this.on_if_this) {
+                console.log(res)
+                let ret = res
+                let retString = JSON.stringify(ret)
+                if (this.on_if_this_fn) {
+                    let onStatus = this.on_if_this_fn(ret)
+                    if (onStatus !== null) {
+                        callback(null, onStatus)
+                        return
+                    }
+                    callback(Error("Status not known"))
+                    return
+                }
+                if (retString == JSON.stringify(this.on_if_this)) {
                     callback(null, true)
-                } else if (ret == this.off_if_this) {
+                } else if (retString == JSON.stringify(this.off_if_this)) {
                     callback(null, false)
                 } else {
                     callback(Error("Status not known"))
                 }
                 this.log(
-                    `[${this.name}] HTTP power state get function succeeded! (${
-                        res.body
-                    })`
+                    `[${
+                        this.name
+                    }] HTTP power state get function succeeded! (${retString})`
                 )
             })
             .catch(err => {
@@ -93,9 +107,9 @@ export class SimpleHTTPSwitch {
         this.makeRequest(powerOn ? this.set_on_url : this.set_off_url)
             .then(res => {
                 this.log(
-                    `[${this.name}] HTTP power function succeeded! (${
-                        res.body
-                    })`
+                    `[${
+                        this.name
+                    }] HTTP power function succeeded! (${JSON.stringify(res)})`
                 )
                 callback()
             })
