@@ -1,6 +1,6 @@
 import request = require("request-promise-native")
 
-export class SimpleHTTPSwitch {
+class SimpleHTTPSwitch {
     private on_if_this_fn: (obj: any) => boolean | null
     private status_url: string
     private set_on_url: string
@@ -125,7 +125,7 @@ export class SimpleHTTPSwitch {
 }
 
 var Service: any, Characteristic: any
-export default function(homebridge: any) {
+export = function(homebridge: any) {
     let hap = homebridge.hap
     Service = hap.Service
     Characteristic = hap.Characteristic
