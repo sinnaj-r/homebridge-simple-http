@@ -146,6 +146,15 @@ export default class SimpleHTTPSwitch {
                         this.name
                     }] HTTP power function succeeded! (${JSON.stringify(res)})`
                 )
+                if (!this.status_url) {
+                    setTimeout(
+                        () =>
+                            this.switchService
+                                .getCharacteristic(Characteristic.On)
+                                .getValue(),
+                        300
+                    )
+                }
                 callback()
             })
             .catch(err => {

@@ -109,6 +109,9 @@ var SimpleHTTPSwitch = /** @class */ (function () {
         this.makeRequest(uri)
             .then(function (res) {
             _this.log("[" + _this.name + "] HTTP power function succeeded! (" + JSON.stringify(res) + ")");
+            if (!_this.status_url) {
+                setTimeout(function () { return _this.switchService.getCharacteristic(Characteristic.On).getValue(); }, 300);
+            }
             callback();
         })
             .catch(function (err) {
