@@ -1,5 +1,5 @@
 {
-  "name": "homebridge_simple_http",
+  "name": "homebridge-simple-http",
   "version": "0.0.1",
   "description": "Simple HTTP Switch for HomeBridge",
   "license": "MIT",
