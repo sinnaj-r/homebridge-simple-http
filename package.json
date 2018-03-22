@@ -27,7 +27,7 @@
     ]
   },
   "scripts": {
-    "precommit": "lint-staged",
+    "precommit": "npm build && git add build/ && lint-staged",
     "build": "tsc"
   },
   "dependencies": {

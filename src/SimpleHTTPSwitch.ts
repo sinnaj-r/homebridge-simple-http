@@ -60,7 +60,6 @@ export default class SimpleHTTPSwitch {
     getPowerState(callback: (error: Error | null, state?: boolean) => void) {
         this.makeRequest(this.status_url)
             .then(res => {
-                console.log(res)
                 let ret = res
                 let retString = JSON.stringify(ret)
                 if (this.on_if_this_fn) {

@@ -23,6 +23,9 @@ var SimpleHTTPSwitch = /** @class */ (function () {
         // State Stuff
         this.on_if_this = config["on_if_this"];
         this.off_if_this = config["off_if_this"];
+        // Polling Stuff
+        this.polling = config["polling"] || false;
+        this.pollingInterval = parseInt(config["pollingInterval"] || 5, 10); // In Seconds
         this.on_if_this_fn =
             config["on_if_this_fn"] && eval(config["on_if_this_fn"]);
         // General
@@ -45,6 +48,7 @@ var SimpleHTTPSwitch = /** @class */ (function () {
                 var onStatus = _this.on_if_this_fn(ret);
                 if (onStatus !== null) {
                     callback(null, onStatus);
+                    _this.log("[" + _this.name + "] HTTP power state get function succeeded! (" + retString + ")");
                     return;
                 }
                 callback(Error("Status not known"));
@@ -72,12 +76,21 @@ var SimpleHTTPSwitch = /** @class */ (function () {
             .setCharacteristic(Characteristic.Manufacturer, "Dock51 UG")
             .setCharacteristic(Characteristic.Model, "Dock51 HTTP Switch")
             .setCharacteristic(Characteristic.SerialNumber, "de.dock51.mk1");
-        var switchService = new Service.Switch();
-        switchService
+        this.switchService = new Service.Switch();
+        this.switchService
             .getCharacteristic(Characteristic.On)
             .on("get", this.getPowerState.bind(this))
             .on("set", this.setPowerState.bind(this));
-        return [switchService];
+        if (this.polling) {
+            this.statePolling();
+        }
+        return [this.switchService];
+    };
+    SimpleHTTPSwitch.prototype.statePolling = function () {
+        clearTimeout(this.pollingTimeOut);
+        this.log("[" + this.name + "] POLLING STATUS");
+        this.switchService.getCharacteristic(Characteristic.On).getValue();
+        this.pollingTimeOut = setTimeout(this.statePolling.bind(this), this.pollingInterval * 1000);
     };
     SimpleHTTPSwitch.prototype.setPowerState = function (powerOn, callback) {
         var _this = this;
