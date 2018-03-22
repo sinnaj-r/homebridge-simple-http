@@ -118,6 +118,7 @@ export default class SimpleHTTPSwitch {
         } else {
             this.switchService
                 .getCharacteristic(Characteristic.On)
+                .on("get", this.getPowerState.bind(this))
                 .on("set", this.setPowerState.bind(this))
         }
         if (this.polling) {
