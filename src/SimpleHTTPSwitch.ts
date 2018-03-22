@@ -3,6 +3,10 @@ declare var Service: any
 declare var Characteristic: any
 
 export default class SimpleHTTPSwitch {
+    private polling: boolean
+    private pollingInterval: number
+    private pollingTimeOut: any
+    private switchService: any
     private on_if_this_fn: (obj: any) => boolean | null
     private status_url: string
     private set_on_url: string
@@ -37,6 +41,10 @@ export default class SimpleHTTPSwitch {
         // State Stuff
         this.on_if_this = config["on_if_this"]
         this.off_if_this = config["off_if_this"]
+
+        // Polling Stuff
+        this.polling = config["polling"] || false
+        this.pollingInterval = parseInt(config["pollingInterval"] || 5, 10) // In Seconds
 
         this.on_if_this_fn =
             config["on_if_this_fn"] && eval(config["on_if_this_fn"])
@@ -94,15 +102,26 @@ export default class SimpleHTTPSwitch {
             .setCharacteristic(Characteristic.Model, "Dock51 HTTP Switch")
             .setCharacteristic(Characteristic.SerialNumber, "de.dock51.mk1")
 
-        let switchService = new Service.Switch()
-        switchService
+        this.switchService = new Service.Switch()
+        this.switchService
             .getCharacteristic(Characteristic.On)
             .on("get", this.getPowerState.bind(this))
             .on("set", this.setPowerState.bind(this))
-
-        return [switchService]
+        if (this.polling) {
+            this.statePolling()
+        }
+        return [this.switchService]
     }
+    statePolling() {
+        clearTimeout(this.pollingTimeOut)
 
+        this.switchService.getCharacteristic(Characteristic.On).getValue()
+
+        this.pollingTimeOut = setTimeout(
+            this.statePolling.bind(this),
+            this.pollingInterval * 1000
+        )
+    }
     setPowerState(powerOn: boolean, callback: (error?: Error) => void) {
         let body
 
