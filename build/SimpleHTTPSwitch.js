@@ -15,7 +15,7 @@ var SimpleHTTPSwitch = /** @class */ (function () {
             }
         */
         // URLs
-        this.status_url = config["status_url"];
+        this.status_url = config["status_url"] || false;
         this.set_on_url = config["set_on_url"];
         this.set_off_url = config["set_off_url"];
         // HTTP Stuff
@@ -79,10 +79,17 @@ var SimpleHTTPSwitch = /** @class */ (function () {
             .setCharacteristic(Characteristic.Model, "Dock51 HTTP Switch")
             .setCharacteristic(Characteristic.SerialNumber, "de.dock51.mk1");
         this.switchService = new Service.Switch();
-        this.switchService
-            .getCharacteristic(Characteristic.On)
-            .on("get", this.getPowerState.bind(this))
-            .on("set", this.setPowerState.bind(this));
+        if (this.status_url) {
+            this.switchService
+                .getCharacteristic(Characteristic.On)
+                .on("get", this.getPowerState.bind(this))
+                .on("set", this.setPowerState.bind(this));
+        }
+        else {
+            this.switchService
+                .getCharacteristic(Characteristic.On)
+                .on("set", this.setPowerState.bind(this));
+        }
         if (this.polling) {
             this.statePolling();
         }
