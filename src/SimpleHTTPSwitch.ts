@@ -58,6 +58,9 @@ export default class SimpleHTTPSwitch {
         })
     }
     getPowerState(callback: (error: Error | null, state?: boolean) => void) {
+        if (!this.status_url) {
+            callback(null, false)
+        }
         this.makeRequest(this.status_url)
             .then(res => {
                 let ret = res

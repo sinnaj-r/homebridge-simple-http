@@ -39,9 +39,11 @@ var SimpleHTTPSwitch = /** @class */ (function () {
     };
     SimpleHTTPSwitch.prototype.getPowerState = function (callback) {
         var _this = this;
+        if (!this.status_url) {
+            callback(null, false);
+        }
         this.makeRequest(this.status_url)
             .then(function (res) {
-            console.log(res);
             var ret = res;
             var retString = JSON.stringify(ret);
             if (_this.on_if_this_fn) {
