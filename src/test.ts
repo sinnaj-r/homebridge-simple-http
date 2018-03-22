@@ -1,4 +1,4 @@
-import { SimpleHTTPSwitch } from "./index"
+import SimpleHTTPSwitch from "./SimpleHTTPSwitch"
 
 let example_config = {
     status_url: "http://192.168.1.14:8081/status/power_stat",
