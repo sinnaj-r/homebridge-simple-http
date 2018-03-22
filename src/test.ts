@@ -4,10 +4,10 @@ let example_config = {
     status_url: "http://192.168.1.14:8081/status/power_stat",
     set_on_url: "http://192.168.1.14:8081/send/KEY_POWER",
     set_off_url: "http://192.168.1.14:8081/send/KEY_POWER2",
-    //on_if_this: {status:"ON"},
-    //off_if_this: {status:"OFF"},
     on_if_this_fn: "(obj)=>obj.status ? obj.status=='ON' : null",
     name: "Anlage"
+    //on_if_this: {status:"ON"},
+    //off_if_this: {status:"OFF"},
 }
 
 let SHS = new SimpleHTTPSwitch(

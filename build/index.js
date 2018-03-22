@@ -1,5 +1,4 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 var request = require("request-promise-native");
 var SimpleHTTPSwitch = /** @class */ (function () {
     function SimpleHTTPSwitch(log, config) {
@@ -23,7 +22,8 @@ var SimpleHTTPSwitch = /** @class */ (function () {
         // State Stuff
         this.on_if_this = config["on_if_this"];
         this.off_if_this = config["off_if_this"];
-        this.on_if_this_fn = config["on_if_this_fn"] && eval(config["on_if_this_fn"]);
+        this.on_if_this_fn =
+            config["on_if_this_fn"] && eval(config["on_if_this_fn"]);
         // General
         this.name = config["name"];
     }
@@ -97,13 +97,11 @@ var SimpleHTTPSwitch = /** @class */ (function () {
     };
     return SimpleHTTPSwitch;
 }());
-exports.SimpleHTTPSwitch = SimpleHTTPSwitch;
 var Service, Characteristic;
-function default_1(homebridge) {
+module.exports = function (homebridge) {
     var hap = homebridge.hap;
     Service = hap.Service;
     Characteristic = hap.Characteristic;
     homebridge.registerAccessory("homebridge-http-simple-switch", "SimpleHttpSwitch", SimpleHTTPSwitch);
-}
-exports.default = default_1;
+};
 //# sourceMappingURL=index.js.map
