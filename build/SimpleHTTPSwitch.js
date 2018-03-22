@@ -104,7 +104,9 @@ var SimpleHTTPSwitch = /** @class */ (function () {
     SimpleHTTPSwitch.prototype.setPowerState = function (powerOn, callback) {
         var _this = this;
         var body;
-        this.makeRequest(powerOn ? this.set_on_url : this.set_off_url)
+        var uri = powerOn ? this.set_on_url : this.set_off_url;
+        uri = this.status_url ? uri : this.set_on_url;
+        this.makeRequest(uri)
             .then(function (res) {
             _this.log("[" + _this.name + "] HTTP power function succeeded! (" + JSON.stringify(res) + ")");
             callback();

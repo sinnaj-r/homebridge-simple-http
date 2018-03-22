@@ -137,8 +137,9 @@ export default class SimpleHTTPSwitch {
     }
     setPowerState(powerOn: boolean, callback: (error?: Error) => void) {
         let body
-
-        this.makeRequest(powerOn ? this.set_on_url : this.set_off_url)
+        let uri = powerOn ? this.set_on_url : this.set_off_url
+        uri = this.status_url ? uri : this.set_on_url
+        this.makeRequest(uri)
             .then(res => {
                 this.log(
                     `[${
