@@ -2,7 +2,10 @@
 This Project tries to deliver a simple, but fail-safe HTTP Switch for HomeBridge
 
 ## Installation
-At this moment there is no NPM module published, so it must be installed locally. For instructions for doing that please refer to the [HomeBridge Github-Site](https://github.com/nfarina/homebridge#plugin-development)
+Just install the NPM Plugin Globally
+```
+npm install -g homebridge-http-simple-switch
+```
 
 ## Usage
 Just configure the config.json as usual, the following paramteres are supported:
@@ -16,11 +19,11 @@ Just configure the config.json as usual, the following paramteres are supported:
       "on_if_this": {"status":"on"},                      // If you don't want to use on_if_this_fn
       "off_if_this": {"status":"off"},                    // If you don't want to use on_if_this_fn
       "set_on_url" : "http://localhost/turn/on",          // The JSON-Webservice URL for turning the device on
-      "polling" : true,                                   // Enable Polling/Refreshing of the Status       
+      "polling" : true,                                   // Enable Polling/Refreshing of the Status
       "pollingInterval" : 5,                              // Polling Interval in Seconds
       "name" : "Desk Light"                               // Name of your Switch/Accessory
     }
-    
+
     // Stateless Switch, will automaticly go off a few miliseconds after switched on
     {
       "accessory" : "SimpleHttpSwitch",
@@ -36,4 +39,3 @@ Just configure the config.json as usual, the following paramteres are supported:
 - improve code readability
 - migrate to a platform instead of a single accessory
 - support other HomeKit-Accessories then 'Switch'
-  
