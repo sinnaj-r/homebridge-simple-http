@@ -4,16 +4,6 @@ var request = require("request-promise-native");
 var SimpleHTTPSwitch = /** @class */ (function () {
     function SimpleHTTPSwitch(log, config) {
         this.log = log;
-        /*
-            example_config = {
-                "status_url":"http://192.168.1.14:8081/status/power_stat",
-                "set_on_url":"http://192.168.1.14:8081/send/KEY_POWER",
-                "set_off_url":"http://192.168.1.14:8081/send/KEY_POWER2",
-                "on_if_this": "ON",
-                "off_if_this": "OFF",
-                "name": "Anlage"
-            }
-        */
         // URLs
         this.status_url = config["status_url"] || false;
         this.set_on_url = config["set_on_url"];
@@ -75,9 +65,9 @@ var SimpleHTTPSwitch = /** @class */ (function () {
     SimpleHTTPSwitch.prototype.getServices = function () {
         var informationService = new Service.AccessoryInformation();
         informationService
-            .setCharacteristic(Characteristic.Manufacturer, "Dock51 UG")
-            .setCharacteristic(Characteristic.Model, "Dock51 HTTP Switch")
-            .setCharacteristic(Characteristic.SerialNumber, "de.dock51.mk1");
+            .setCharacteristic(Characteristic.Manufacturer, "SimpleHTTPSwitch Manufacturer")
+            .setCharacteristic(Characteristic.Model, "Simple HTTP Switch")
+            .setCharacteristic(Characteristic.SerialNumber, "de.jannisrosenbaum.SimpleHTTPSwitch");
         this.switchService = new Service.Switch();
         if (this.status_url) {
             this.switchService
@@ -88,6 +78,7 @@ var SimpleHTTPSwitch = /** @class */ (function () {
         else {
             this.switchService
                 .getCharacteristic(Characteristic.On)
+                .on("get", this.getPowerState.bind(this))
                 .on("set", this.setPowerState.bind(this));
         }
         if (this.polling) {
@@ -110,7 +101,11 @@ var SimpleHTTPSwitch = /** @class */ (function () {
             .then(function (res) {
             _this.log("[" + _this.name + "] HTTP power function succeeded! (" + JSON.stringify(res) + ")");
             if (!_this.status_url) {
-                setTimeout(function () { return _this.switchService.getCharacteristic(Characteristic.On).getValue(); }, 300);
+                setTimeout(function () {
+                    return _this.switchService
+                        .getCharacteristic(Characteristic.On)
+                        .getValue();
+                }, 300);
             }
             callback();
         })
