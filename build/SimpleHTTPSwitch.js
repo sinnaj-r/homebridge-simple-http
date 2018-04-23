@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 var request_promise_native_1 = __importDefault(require("request-promise-native"));
-var url_1 = require("url");
 var SimpleHTTPSwitch = /** @class */ (function () {
     function SimpleHTTPSwitch(log, config) {
         this.log = log;
@@ -28,7 +27,6 @@ var SimpleHTTPSwitch = /** @class */ (function () {
     }
     SimpleHTTPSwitch.prototype.makeRequest = function (url) {
         if (this.ignore_https_security == true) {
-            var urlObj = new url_1.URL(url);
             var agentOptions = {
                 rejectUnauthorized: false
             };
@@ -50,6 +48,7 @@ var SimpleHTTPSwitch = /** @class */ (function () {
         var _this = this;
         if (!this.status_url) {
             callback(null, false);
+            return;
         }
         this.makeRequest(this.status_url)
             .then(function (res) {
