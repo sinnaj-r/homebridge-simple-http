@@ -1,18 +1,25 @@
 # homebridge_simple_http
+
 This Project tries to deliver a simple, but fail-safe HTTP Switch for HomeBridge
 
 ## Installation
+
 Just install the NPM Plugin Globally
+
 ```
 npm install -g homebridge-http-simple-switch
 ```
 
 ## Usage
+
 Just configure the config.json as usual, the following paramteres are supported:
+
 ```
     // Switch with polling and a On/Off-State
     {
       "accessory" : "SimpleHttpSwitch",
+      "http_method" : "GET",                              // The HTTP-Method
+      "ignore_https_security" : false                     // Should the HTTPS Certificate (for all https requests) be validated? (Set it to true if you are using a self-signed cert)
       "set_off_url" : "http://localhost/turn/off",        // The JSON-Webservice URL for turning the device on
       "status_url" : "http://localhost/device/status",    // The JSON-Webservice URL for getting the device's status
       "on_if_this_fn" : "(obj)=>obj.status ? obj.status=='ON' : null", //JS Function for evaluating if the device is on, you can alternativly use the following:
@@ -34,8 +41,8 @@ Just configure the config.json as usual, the following paramteres are supported:
 ```
 
 ## ToDo
-- publish to npm
-- improve TypeScript Typings
-- improve code readability
-- migrate to a platform instead of a single accessory
-- support other HomeKit-Accessories then 'Switch'
+
+*   improve TypeScript Typings
+*   improve code readability
+*   migrate to a platform instead of a single accessory
+*   support other HomeKit-Accessories then 'Switch'

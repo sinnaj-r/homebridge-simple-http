@@ -1,4 +1,5 @@
-import request = require("request-promise-native")
+import request from "request-promise-native"
+import { URL } from "url"
 declare var Service: any
 declare var Characteristic: any
 
@@ -13,6 +14,7 @@ export default class SimpleHTTPSwitch {
     private set_off_url: string
     private on_if_this: string
     private off_if_this: string
+    private ignore_https_security: boolean
     private log: any
     private http_method: any
     private default_state_off: any
@@ -27,6 +29,7 @@ export default class SimpleHTTPSwitch {
 
         // HTTP Stuff
         this.http_method = config["http_method"] || "GET"
+        this.ignore_https_security = config["ignore_https_security"] || false
 
         // State Stuff
         this.on_if_this = config["on_if_this"]
@@ -42,10 +45,23 @@ export default class SimpleHTTPSwitch {
         this.name = config["name"]
     }
     makeRequest(url: string) {
-        return request(url, {
-            method: this.http_method,
-            json: true
-        })
+        if (this.ignore_https_security == true) {
+            const urlObj = new URL(url)
+            const agentOptions = {
+                rejectUnauthorized: false
+            }
+            return request({
+                url,
+                agentOptions,
+                method: this.http_method,
+                json: true
+            })
+        } else {
+            return request(url, {
+                method: this.http_method,
+                json: true
+            })
+        }
     }
     getPowerState(callback: (error: Error | null, state?: boolean) => void) {
         if (!this.status_url) {

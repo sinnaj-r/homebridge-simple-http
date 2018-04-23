@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+}
 Object.defineProperty(exports, "__esModule", { value: true });
-var request = require("request-promise-native");
+var request_promise_native_1 = __importDefault(require("request-promise-native"));
+var url_1 = require("url");
 var SimpleHTTPSwitch = /** @class */ (function () {
     function SimpleHTTPSwitch(log, config) {
         this.log = log;
@@ -10,6 +14,7 @@ var SimpleHTTPSwitch = /** @class */ (function () {
         this.set_off_url = config["set_off_url"];
         // HTTP Stuff
         this.http_method = config["http_method"] || "GET";
+        this.ignore_https_security = config["ignore_https_security"] || false;
         // State Stuff
         this.on_if_this = config["on_if_this"];
         this.off_if_this = config["off_if_this"];
@@ -22,10 +27,24 @@ var SimpleHTTPSwitch = /** @class */ (function () {
         this.name = config["name"];
     }
     SimpleHTTPSwitch.prototype.makeRequest = function (url) {
-        return request(url, {
-            method: this.http_method,
-            json: true
-        });
+        if (this.ignore_https_security == true) {
+            var urlObj = new url_1.URL(url);
+            var agentOptions = {
+                rejectUnauthorized: false
+            };
+            return request_promise_native_1.default({
+                url: url,
+                agentOptions: agentOptions,
+                method: this.http_method,
+                json: true
+            });
+        }
+        else {
+            return request_promise_native_1.default(url, {
+                method: this.http_method,
+                json: true
+            });
+        }
     };
     SimpleHTTPSwitch.prototype.getPowerState = function (callback) {
         var _this = this;
