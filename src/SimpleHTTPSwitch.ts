@@ -46,7 +46,6 @@ export default class SimpleHTTPSwitch {
     }
     makeRequest(url: string) {
         if (this.ignore_https_security == true) {
-            const urlObj = new URL(url)
             const agentOptions = {
                 rejectUnauthorized: false
             }
@@ -66,6 +65,7 @@ export default class SimpleHTTPSwitch {
     getPowerState(callback: (error: Error | null, state?: boolean) => void) {
         if (!this.status_url) {
             callback(null, false)
+            return
         }
         this.makeRequest(this.status_url)
             .then(res => {
