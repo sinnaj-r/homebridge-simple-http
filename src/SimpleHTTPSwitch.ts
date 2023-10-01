@@ -75,11 +75,7 @@ export default class SimpleHTTPSwitch {
                     let onStatus = this.on_if_this_fn(ret)
                     if (onStatus !== null) {
                         callback(null, onStatus)
-                        this.log(
-                            `[${
-                                this.name
-                            }] HTTP power state get function succeeded! (${retString})`
-                        )
+                        this.log.debug(`HTTP power state get function succeeded! (${retString})`)
                         return
                     }
                     callback(Error("Status not known"))
@@ -92,18 +88,10 @@ export default class SimpleHTTPSwitch {
                 } else {
                     callback(Error("Status not known"))
                 }
-                this.log(
-                    `[${
-                        this.name
-                    }] HTTP power state get function succeeded! (${retString})`
-                )
+                this.log.debug(`HTTP power state get function succeeded! (${retString})`)
             })
             .catch(err => {
-                this.log(
-                    `[${
-                        this.name
-                    }] HTTP power power state get function failed! (${err})`
-                )
+                this.log(`HTTP power power state get function failed! (${err})`)
                 callback(err)
             })
     }
@@ -140,7 +128,7 @@ export default class SimpleHTTPSwitch {
     }
     statePolling() {
         clearTimeout(this.pollingTimeOut)
-        this.log(`[${this.name}] POLLING STATUS`)
+        this.log.debug(`POLLING STATUS`)
         this.switchService.getCharacteristic(Characteristic.On).getValue()
 
         this.pollingTimeOut = setTimeout(
@@ -154,11 +142,7 @@ export default class SimpleHTTPSwitch {
         uri = this.status_url ? uri : this.set_on_url
         this.makeRequest(uri)
             .then(res => {
-                this.log(
-                    `[${
-                        this.name
-                    }] HTTP power function succeeded! (${JSON.stringify(res)})`
-                )
+                this.log(`HTTP power function succeeded! (${JSON.stringify(res)})`)
                 if (!this.status_url) {
                     setTimeout(
                         () =>
