@@ -58,7 +58,7 @@ var SimpleHTTPSwitch = /** @class */ (function () {
                 var onStatus = _this.on_if_this_fn(ret);
                 if (onStatus !== null) {
                     callback(null, onStatus);
-                    _this.log("[" + _this.name + "] HTTP power state get function succeeded! (" + retString + ")");
+                    _this.log.debug("HTTP power state get function succeeded! (" + retString + ")");
                     return;
                 }
                 callback(Error("Status not known"));
@@ -73,10 +73,10 @@ var SimpleHTTPSwitch = /** @class */ (function () {
             else {
                 callback(Error("Status not known"));
             }
-            _this.log("[" + _this.name + "] HTTP power state get function succeeded! (" + retString + ")");
+            _this.log.debug("HTTP power state get function succeeded! (" + retString + ")");
         })
             .catch(function (err) {
-            _this.log("[" + _this.name + "] HTTP power power state get function failed! (" + err + ")");
+            _this.log("HTTP power power state get function failed! (" + err + ")");
             callback(err);
         });
     };
@@ -106,7 +106,7 @@ var SimpleHTTPSwitch = /** @class */ (function () {
     };
     SimpleHTTPSwitch.prototype.statePolling = function () {
         clearTimeout(this.pollingTimeOut);
-        this.log("[" + this.name + "] POLLING STATUS");
+        this.log.debug("POLLING STATUS");
         this.switchService.getCharacteristic(Characteristic.On).getValue();
         this.pollingTimeOut = setTimeout(this.statePolling.bind(this), this.pollingInterval * 1000);
     };
@@ -117,7 +117,7 @@ var SimpleHTTPSwitch = /** @class */ (function () {
         uri = this.status_url ? uri : this.set_on_url;
         this.makeRequest(uri)
             .then(function (res) {
-            _this.log("[" + _this.name + "] HTTP power function succeeded! (" + JSON.stringify(res) + ")");
+            _this.log("HTTP power function succeeded! (" + JSON.stringify(res) + ")");
             if (!_this.status_url) {
                 setTimeout(function () {
                     return _this.switchService
